@@ -1,0 +1,14 @@
+
+[X] As a user, I want to configure my workouts
+  [X] single workout
+  [X] exercise sets and reps
+[X] As a user I want my progress saved
+[X] As a user I want to finish a full workout for the day
+[X] As a user I want to undo a mistaken entry
+[X] As a user I want to show / hide the timer
+
+[ ] As a user I want to see my workout history
+[ ] As a user I want to archive workouts
+
+Bugs
+[ ] exercise editor text input is causing rerenders and perf jank
