@@ -161,6 +161,7 @@ const ExerciseEditor = ({ exercise }) => {
               placeholder="Exercise Name"
               onChangeText={setExerciseName}
               clearButtonMode="while-editing"
+              selectTextOnFocus
             />
           </View>
         </View>

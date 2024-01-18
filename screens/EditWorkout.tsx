@@ -33,7 +33,7 @@ function EditWorkout({ navigation, route }) {
     editExercise()
   }
 
-  const isEmptyWorkout = workout.name === 'New workout' && exercises.length === 0
+  const isEmptyWorkout = workout.name === '' && exercises.length === 0
 
   return (
     <ScrollWithHeaderView

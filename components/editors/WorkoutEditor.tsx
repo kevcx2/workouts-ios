@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     borderTopColor: tokens.border.separatorColor,
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   exerciseContainer: {
     flex: 1,
@@ -60,6 +61,7 @@ const styles = StyleSheet.create({
   },
   actionIcon: {
     padding: 10,
+    paddingVertical: 24,
   },
   actionPressed: {
     backgroundColor: 'transparent',
@@ -136,7 +138,14 @@ function WorkoutEditor({
         </View>
       </View>
       {activeExercises.map((exercise) => (
-        <View style={styles.exercise} key={exercise.id}>
+        <PressableView
+          style={styles.exercise}
+          key={exercise.id}
+          onPress={() => {
+            onSelectExercise(exercise)
+            editExercise()
+          }}
+        >
           <Exercise
             style={styles.exerciseContainer}
             key={exercise.name}
@@ -200,7 +209,7 @@ function WorkoutEditor({
               />
             </PressableView>
           </View>
-        </View>
+        </PressableView>
       ))}
       {!!archivedExercises.length && (
         <>

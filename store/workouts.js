@@ -71,7 +71,7 @@ const useWorkouts = () => {
   const updateExerciseName = (exerciseId, updatedName) => {
     const updatedWorkouts = [...workouts]
     const exerciseToUpdate = getExerciseById(exerciseId, updatedWorkouts)
-    exerciseToUpdate.name = updatedName
+    exerciseToUpdate.name = updatedName || "New Exercise"
     saveWorkoutsState(updatedWorkouts)
   }
 
@@ -214,7 +214,7 @@ const useWorkouts = () => {
     const updatedWorkouts = [...workouts]
     const newWorkout = {
       id: createId(),
-      name: 'New workout',
+      name: '',
       lastCompletedAt: undefined,
       exercises: [],
     }

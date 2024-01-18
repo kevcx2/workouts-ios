@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
 
 const Exercise = ({ exercise, onPress, title, style, titleStyle, hideSets }) => {
   const content = (
-    <View key={exercise.name} style={style}>
+    <View style={style}>
       <Strong style={[styles.name, titleStyle]}>
         {title ? title : exercise.name}
       </Strong>
