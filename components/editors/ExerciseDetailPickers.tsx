@@ -2,6 +2,7 @@ import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 
 import Picker from '@/components/base/Picker'
+import { useSettingsContext } from '@/store/settings'
 import tokens from '@/styles/tokens'
 
 const styles = StyleSheet.create({
@@ -22,9 +23,6 @@ const styles = StyleSheet.create({
   pickerLabel: {
     fontSize: tokens.text.size.base,
     color: tokens.text.primaryColor,
-  },
-  weightPicker: {
-    width: 112,
   },
   repsPickerContainer: {
     flex: 1.5,
@@ -57,6 +55,9 @@ const styles = StyleSheet.create({
 })
 
 const ExerciseDetailPickers = ({ weight, repsLow, repsHigh, onChange }) => {
+  const { incrementWeightBy } = useSettingsContext()
+  const DEFAULT_INCREMENT_WEIGHT_BY = 2.5
+
   const onChangeWeight = (newWeight) => {
     onChange({
       weight: newWeight,
@@ -89,7 +90,7 @@ const ExerciseDetailPickers = ({ weight, repsLow, repsHigh, onChange }) => {
           onValueChange={onChangeWeight}
           min={0}
           max={999}
-          step={2.5}
+          step={incrementWeightBy || DEFAULT_INCREMENT_WEIGHT_BY}
         />
       </View>
       <View style={styles.repsPickerContainer}>

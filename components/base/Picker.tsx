@@ -15,6 +15,7 @@ const createRange = (min, max, step) => {
 const styles = StyleSheet.create({
   pickerItem: {
     color: tokens.text.primaryColor,
+    fontSize: tokens.text.size.md,
   },
 })
 

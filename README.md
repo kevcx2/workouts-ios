@@ -7,4 +7,3 @@ It's built with React Native & Expo.
 [Demo video](https://vimeo.com/903495096?share=copy)
 
 [Workouts iOS](https://www.workoutsios.com/)
-
