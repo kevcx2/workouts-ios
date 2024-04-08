@@ -30,13 +30,14 @@ const styleTokens = {
     linkColor: PlatformColor('link'),
     dangerColor: PlatformColor('systemOrange'),
     size: {
+      sm: 14,
       base: 16,
       md: 17,
       lg: 19,
     },
   },
   header: {
-    height: 90,
+    height: 100,
   },
   highlight: PlatformColor('systemBlue'),
 }

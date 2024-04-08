@@ -1,8 +1,10 @@
+import tokens from '@/styles/tokens'
+
 const headerTokens = {
   fixedHeaderStyle: {
     display: 'flex',
     justifyContent: 'flex-end',
-    height: 90,
+    height: tokens.header.height,
     width: '100%',
     position: 'absolute',
     top: 0,

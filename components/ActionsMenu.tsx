@@ -4,13 +4,13 @@ import { Ionicons } from '@expo/vector-icons'
 
 import DropdownMenu from '@/components/dropdown/DropdownMenu'
 
-const ActionsMenu = ({ menuItems }) => {
+const ActionsMenu = ({ menuItems, icon = "ellipsis-horizontal-circle" }) => {
   return (
     <DropdownMenu
       menuItems={menuItems}
       trigger={
         <Ionicons
-          name="ellipsis-horizontal-circle"
+          name={icon}
           size={28}
           color={PlatformColor('link')}
         />

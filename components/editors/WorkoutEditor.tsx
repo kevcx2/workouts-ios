@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -13,6 +13,8 @@ import Exercise from '@/components/exercise/Exercise'
 import { useWorkoutsContext } from '@/store/workouts'
 import PressableView from '@/components/base/PressableView'
 import ExerciseEditor from '@/components/editors/ExerciseEditor'
+import ExerciseEditButtons from '@/components/editors/ExerciseEditButtons'
+import ArchivedExerciseButtons from '@/components/editors/ArchivedExerciseButtons'
 import tokens from '@/styles/tokens'
 
 const styles = StyleSheet.create({
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
     paddingTop: tokens.space.base,
     paddingBottom: tokens.space.base,
   },
-  workoutName: {
+  workoutNameContainer: {
     display: 'flex',
     flexDirection: 'row',
     backgroundColor: tokens.background.secondary,
@@ -41,15 +43,15 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     marginHorizontal: tokens.space.base,
   },
-  nameInput: {
+  workoutNameInput: {
     flex: 1,
     marginLeft: tokens.space.base,
   },
-  nameLabelText: {
+  workoutNameLabel: {
     color: tokens.text.primaryColor,
     fontSize: tokens.text.size.base,
   },
-  nameInputText: {
+  workoutNameText: {
     color: tokens.text.secondaryColor,
     fontSize: tokens.text.size.base,
   },
@@ -102,6 +104,7 @@ const styles = StyleSheet.create({
 
 // TODO: Break this up into sub-components.
 function WorkoutEditor({
+  navigation,
   workoutId,
   selectedExercise,
   onSelectExercise,
@@ -120,16 +123,17 @@ function WorkoutEditor({
   const { exercises } = workout
   const hasNoExercises = exercises.length === 0
 
+
   const activeExercises = exercises.filter((exercise) => !exercise.deleted)
   const archivedExercises = exercises.filter((exercise) => exercise.deleted)
 
   return (
     <>
-      <View style={styles.workoutName}>
-        <Text style={styles.nameLabelText}>Name</Text>
-        <View style={styles.nameInput}>
+      <View style={styles.workoutNameContainer}>
+        <Text style={styles.workoutNameLabel}>Name</Text>
+        <View style={styles.workoutNameInput}>
           <TextInput
-            style={styles.nameInputText}
+            style={styles.workoutNameText}
             placeholder="Workout Name"
             clearButtonMode="while-editing"
             value={workout.name}
@@ -152,63 +156,18 @@ function WorkoutEditor({
             exercise={exercise}
             hideSets
           />
-          <View style={styles.actions}>
-            <PressableView
-              pressedStyle={styles.actionPressed}
-              onPress={() => {
-                moveExerciseUp(workoutId, exercise.id)
-              }}
-            >
-              <Ionicons
-                style={styles.actionIcon}
-                name="chevron-up-outline"
-                size={24}
-                color={PlatformColor('link')}
-              />
-            </PressableView>
-            <PressableView
-              pressedStyle={styles.actionPressed}
-              onPress={() => {
-                onSelectExercise(exercise)
-                editExercise()
-              }}
-            >
-              <Ionicons
-                style={styles.actionIcon}
-                name="create-outline"
-                size={24}
-                color={PlatformColor('link')}
-              />
-            </PressableView>
-            <PressableView
-              pressedStyle={styles.actionPressed}
-              onPress={() => {
-                Alert.alert(
-                  'Remove Exercise',
-                  'Your exercise history will be saved, and the exercise will be removed from this workout',
-                  [
-                    {
-                      text: 'No',
-                      style: 'cancel',
-                    },
-                    {
-                      text: 'Yes',
-                      onPress: () => {
-                        archiveExercise(exercise.id)
-                      },
-                    },
-                  ],
-                )
-              }}
-            >
-              <Ionicons
-                style={styles.actionIcon}
-                name="trash-outline"
-                size={24}
-                color={PlatformColor('systemRed')}
-              />
-            </PressableView>
-          </View>
+          <ExerciseEditButtons
+            onMoveExerciseUp={() => {
+              moveExerciseUp(workoutId, exercise.id)
+            }}
+            onEditExercise={() => {
+              onSelectExercise(exercise)
+              editExercise()
+            }}
+            onArchiveExercise={() => {
+              archiveExercise(exercise.id)
+            }}
+          />
         </PressableView>
       ))}
       {!!archivedExercises.length && (
@@ -224,47 +183,10 @@ function WorkoutEditor({
                 exercise={exercise}
                 hideSets
               />
-              <View style={styles.actions}>
-                <PressableView
-                  pressedStyle={styles.actionPressed}
-                  onPress={() => restoreExercise(exercise.id)}
-                >
-                  <Ionicons
-                    style={styles.actionIcon}
-                    name="arrow-undo-outline"
-                    size={24}
-                    color={PlatformColor('link')}
-                  />
-                </PressableView>
-                <PressableView
-                  pressedStyle={styles.actionPressed}
-                  onPress={() => {
-                    Alert.alert(
-                      'Delete exercise',
-                      'This will permanently delete this exercise and all related workout data',
-                      [
-                        {
-                          text: 'No',
-                          style: 'cancel',
-                        },
-                        {
-                          text: 'Yes',
-                          onPress: () => {
-                            deleteExercise(exercise.id)
-                          },
-                        },
-                      ],
-                    )
-                  }}
-                >
-                  <Ionicons
-                    style={styles.actionIcon}
-                    name="trash-outline"
-                    size={24}
-                    color={PlatformColor('systemRed')}
-                  />
-                </PressableView>
-              </View>
+              <ArchivedExerciseButtons
+                onRestoreExercise={() => restoreExercise(exercise.id)}
+                onDeleteExercise={() => deleteExercise(exercise.id)}
+              />
             </View>
           ))}
         </>

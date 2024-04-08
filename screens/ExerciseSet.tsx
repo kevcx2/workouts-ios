@@ -38,7 +38,7 @@ const ExerciseSet = ({ route }) => {
       leftHeaderEl={<BackButton />}
       rightHeaderEl={<ActionsMenu menuItems={headerActions} />}
     >
-      <Set exercise={exercise} />
+      <Set exercise={exercise}/>
     </HeaderView>
   )
 }

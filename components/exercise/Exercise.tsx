@@ -16,14 +16,41 @@ const styles = StyleSheet.create({
     marginTop: tokens.space.small,
     color: tokens.text.secondaryColor,
   },
+  titleRowContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  supersetContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: tokens.space.small,
+    paddingHorizontal: tokens.space.half,
+    backgroundColor: tokens.background.secondary,
+    borderRadius: tokens.space.double,
+  },
+  supersetBadgeText: {
+    color: tokens.text.secondaryColor,
+    fontSize: tokens.text.size.sm,
+  },
 })
 
-const Exercise = ({ exercise, onPress, title, style, titleStyle, hideSets }) => {
+const Exercise = ({
+  exercise,
+  onPress,
+  title,
+  style,
+  titleStyle,
+  hideSets,
+}) => {
   const content = (
     <View style={style}>
-      <Strong style={[styles.name, titleStyle]}>
-        {title ? title : exercise.name}
-      </Strong>
+      <View style={styles.titleRowContainer}>
+        <Strong style={[styles.name, titleStyle]}>
+          {title ? title : exercise.name}
+        </Strong>
+      </View>
       <Text style={styles.details}>
         {formatExerciseDescription(
           exercise.weight,

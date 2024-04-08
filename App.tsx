@@ -6,7 +6,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { WorkoutsProvider, useWorkoutsContext } from '@/store/workouts'
 import { StopwatchProvider } from '@/store/stopwatch'
 import { SettingsProvider } from './store/settings'
+import { BackdropProvider } from '@/components/Backdrop'
 
+import Backdrop from '@/components/Backdrop'
 import Workouts from '@/screens/Workouts'
 import Workout from '@/screens/Workout'
 import EditWorkout from '@/screens/EditWorkout'
@@ -28,18 +30,22 @@ function App() {
         <Loading>
           <StopwatchProvider>
             <SettingsProvider>
-              <Stack.Navigator screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="Workouts" component={Workouts} />
-                <Stack.Screen name="Workout" component={Workout} />
-                <Stack.Screen name="EditWorkout" component={EditWorkout} />
-                <Stack.Screen name="WorkoutHistory" component={WorkoutHistory} />
-                <Stack.Screen name="ExerciseSet" component={ExerciseSet} />
-                <Stack.Screen name="Settings" component={Settings} />
-                <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
-                <Stack.Screen name="About" component={About} />
-                <Stack.Screen name="DebugData" component={DebugData} />
-                <Stack.Screen name="WeightIncrement" component={WeightIncrement} />
-              </Stack.Navigator>
+              <BackdropProvider>
+                <Backdrop>
+                  <Stack.Navigator screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="Workouts" component={Workouts} />
+                    <Stack.Screen name="Workout" component={Workout} />
+                    <Stack.Screen name="EditWorkout" component={EditWorkout} />
+                    <Stack.Screen name="WorkoutHistory" component={WorkoutHistory} />
+                    <Stack.Screen name="ExerciseSet" component={ExerciseSet} />
+                    <Stack.Screen name="Settings" component={Settings} />
+                    <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+                    <Stack.Screen name="About" component={About} />
+                    <Stack.Screen name="DebugData" component={DebugData} />
+                    <Stack.Screen name="WeightIncrement" component={WeightIncrement} />
+                  </Stack.Navigator>
+                </Backdrop>
+              </BackdropProvider> 
             </SettingsProvider>
           </StopwatchProvider>
         </Loading>

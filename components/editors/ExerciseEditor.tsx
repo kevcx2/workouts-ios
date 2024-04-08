@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Text, TextInput, View, StyleSheet, Button } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import {
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  Button,
+} from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import BottomSheet from '@/components/base/BottomSheet'
 import Strong from '@/components/base/Strong'
-import ExerciseDetailPickers from '@/components/editors/ExerciseDetailPickers'
+import NumSetsSelector from '@/components/editors/NumSetsSelector'
+import ExerciseWeightAndRepsPickers from '@/components/editors/ExerciseWeightAndRepsPickers'
 import { useWorkoutsContext } from '@/store/workouts'
-import PressableView from '@/components/base/PressableView'
 import tokens from '@/styles/tokens'
 
 const styles = StyleSheet.create({
@@ -51,42 +57,7 @@ const styles = StyleSheet.create({
     color: tokens.text.secondaryColor,
     fontSize: tokens.text.size.base,
   },
-  setsInputArea: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  setsInput: {
-    width: 133,
-    display: 'flex',
-    flexDirection: 'row',
-    color: tokens.text.primaryColor,
-    backgroundColor: tokens.background.tertiary,
-    marginBottom: tokens.space.base,
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
-  setsInputText: {
-    color: tokens.text.secondaryColor,
-    fontSize: tokens.text.size.base,
-    paddingLeft: 24,
-  },
-  setsAdjustment: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    backgroundColor: tokens.background.tertiary,
-    marginBottom: tokens.space.base,
-    borderRadius: 12,
-    paddingVertical: 7,
-    paddingHorizontal: 9,
-    marginLeft: 12,
-  },
 })
-
-const MAX_SETS = 18
 
 const ExerciseEditor = ({ exercise }) => {
   const [weightAndReps, setWeightAndReps] = useState({
@@ -96,6 +67,7 @@ const ExerciseEditor = ({ exercise }) => {
   })
   const [exerciseName, setExerciseName] = useState(exercise?.name)
   const [numSets, setNumSets] = useState(exercise?.numSets || 1)
+  const navigation = useNavigation()
 
   useEffect(() => {
     setExerciseName(exercise?.name)
@@ -141,7 +113,7 @@ const ExerciseEditor = ({ exercise }) => {
         <Strong>Edit Exercise</Strong>
         <View style={styles.headerButtonRight}>
           <Button
-            title={'Save'}
+            title={'Done'}
             onPress={() => {
               updateExerciseWeightReps(exercise.id, weightAndReps)
               updateExerciseName(exercise.id, exerciseName)
@@ -165,39 +137,8 @@ const ExerciseEditor = ({ exercise }) => {
             />
           </View>
         </View>
-        <View style={styles.setsInputArea}>
-          <View style={styles.setsInput}>
-            <Text style={styles.nameLabelText}>Sets</Text>
-            <Text style={styles.setsInputText}>{numSets}</Text>
-          </View>
-          <PressableView
-            style={styles.setsAdjustment}
-            onPress={() => {
-              const nextNumSets = numSets + 1
-              setNumSets(Math.min(nextNumSets, MAX_SETS))
-            }}
-          >
-            <Ionicons
-              name="add-outline"
-              size={24}
-              color={tokens.text.secondaryColor}
-            />
-          </PressableView>
-          <PressableView
-            style={styles.setsAdjustment}
-            onPress={() => {
-              const nextNumSets = numSets - 1
-              setNumSets(Math.max(nextNumSets, 1))
-            }}
-          >
-            <Ionicons
-              name="remove-outline"
-              size={24}
-              color={tokens.text.secondaryColor}
-            />
-          </PressableView>
-        </View>
-        <ExerciseDetailPickers
+        <NumSetsSelector numSets={numSets} setNumSets={setNumSets} />
+        <ExerciseWeightAndRepsPickers
           weight={weightAndReps.weight}
           repsLow={weightAndReps.repsLow}
           repsHigh={weightAndReps.repsHigh}

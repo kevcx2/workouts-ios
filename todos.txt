@@ -6,8 +6,14 @@
 [X] As a user I want to finish a full workout for the day
 [X] As a user I want to undo a mistaken entry
 [X] As a user I want to show / hide the timer
+[X] As a user I want to see my workout history
 
-[ ] As a user I want to see my workout history
+[ ] As a user, I want to super-set my exercises
+  [ ] Create a superset
+  [ ] Remove a superset
+  [ ] Auto-remove a superset if an exercise is archived
+  [ ] Auto-switch to supersetted exercises when a set is complete
+
 [ ] As a user I want to archive workouts
 
 Bugs

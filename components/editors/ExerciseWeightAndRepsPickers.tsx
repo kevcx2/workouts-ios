@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const ExerciseDetailPickers = ({ weight, repsLow, repsHigh, onChange }) => {
+const ExerciseWeightAndRepsPickers = ({ weight, repsLow, repsHigh, onChange }) => {
   const { incrementWeightBy } = useSettingsContext()
   const DEFAULT_INCREMENT_WEIGHT_BY = 2.5
 
@@ -121,4 +121,4 @@ const ExerciseDetailPickers = ({ weight, repsLow, repsHigh, onChange }) => {
   )
 }
 
-export default ExerciseDetailPickers
+export default ExerciseWeightAndRepsPickers

@@ -27,6 +27,12 @@ const useWorkouts = () => {
     return workoutsState.find((workout) => workout.id === workoutId)
   }
 
+  const getWorkoutByExerciseId = (exerciseId, workoutsState = workouts) => {
+    return workoutsState.find((workout) => {
+      return workout.exercises.find((exercise) => exercise.id === exerciseId)
+    })
+  }
+
   const saveWorkoutsState = async (newState) => {
     setWorkouts(newState)
     persistence.save(WORKOUTS_STORE_KEY, newState)
@@ -95,9 +101,33 @@ const useWorkouts = () => {
       exercise.history.push(exerciseToArchive)
       // reset current exercise to blank state
       exercise.completedSets = []
-      exercise.id = createId()
+      const newId = createId()
+      // Because exercise ids are being re-created, we need to update the exercise ids
+      // used to track superset exercises 
+      updateSupersetExerciseId(
+        workoutToComplete.supersets,
+        exercise.id,
+        newId,
+      )
+      exercise.id = newId
     })
     saveWorkoutsState(updatedWorkouts)
+  }
+
+  // Update the exercise id in a superset. Updates exercise id
+  // when it is a key or value.
+  const updateSupersetExerciseId = (supersets, oldId, newId) => {
+    // Check every value and update if the value === oldId
+    for (const key in supersets) {
+      if (supersets[key] === oldId) {
+        supersets[key] = newId
+      }
+    }
+    if (supersets[oldId]) {
+      supersets[newId] = supersets[oldId]
+      delete supersets[oldId]
+    }
+    return supersets
   }
 
   const restoreLastWorkout = (workoutId) => {
@@ -130,32 +160,37 @@ const useWorkouts = () => {
   }
 
   const moveExerciseUp = (workoutId, exerciseId) => {
-    const updatedWorkouts = [...workouts]
-    saveWorkoutsState(moveExercise(updatedWorkouts, workoutId, exerciseId, 'back'))
+    let updatedWorkouts = [...workouts]
+    updatedWorkouts = moveExercise(updatedWorkouts, workoutId, exerciseId, 'back')
+    saveWorkoutsState(updatedWorkouts)
   }
 
   // eslint-disable-next-line no-shadow
   const moveExercise = (workouts, workoutId, exerciseId, direction) => {
-    return workouts.map((workout) => {
-      if (workout.id !== workoutId) return workout
-      // Find the index of the exercise
-      const exerciseIndex = workout.exercises.findIndex(
-        (exercise) => exercise.id === exerciseId,
-      )
-      // Check if the exercise is found or already at the boundary
-      const atStart = exerciseIndex === 0 && direction === 'back'
-      const atEnd =
-        exerciseIndex === workout.exercises.length - 1 && direction === 'forward'
-      if (exerciseIndex === -1 || atStart || atEnd) return workout
+    // Find the index of the workout to modify
+    const workoutIndex = workouts.findIndex((workout) => workout.id === workoutId)
+    // Find the index of the exercise to move
+    const exerciseIndex = workouts[workoutIndex].exercises.findIndex(
+      (exercise) => exercise.id === exerciseId,
+    )
+    // Detect if the exercise can move; if the direction is back, the exercise cannot
+    // move past the 0 index; if the direction is forward, the exercise cannot move
+    // past the last index
+    if (
+      (direction === 'back' && exerciseIndex === 0) ||
+      (direction === 'forward' &&
+        exerciseIndex === workouts[workoutIndex].exercises.length - 1)
+    ) {
+      return workouts
+    }
+    // If the exercise can move, position the array elements in their new locations
+    workouts[workoutIndex].exercises.splice(
+      direction === 'back' ? exerciseIndex - 1 : exerciseIndex + 1,
+      0,
+      workouts[workoutIndex].exercises.splice(exerciseIndex, 1)[0],
+    )
 
-      // Remove the exercise from the current index
-      const [exercise] = workout.exercises.splice(exerciseIndex, 1)
-      // Calculate new index
-      const newIndex = exerciseIndex + (direction === 'forward' ? 1 : -1)
-      // Add the exercise into the new index
-      workout.exercises.splice(newIndex, 0, exercise)
-      return workout
-    })
+    return workouts
   }
 
   const renameWorkout = (workoutId, newName) => {
@@ -228,10 +263,90 @@ const useWorkouts = () => {
     saveWorkoutsState(updatedWorkouts.filter((workout) => workout.id !== workoutId))
   }
 
+  
+
+  // Create a superset between two exercises. A superset is structured as:
+  // supersets: {
+  //   [firstSupersetExerciseId]: secondSupersetExerciseId,
+  //   [secondSupersetExerciseId]: firstSupersetExerciseId,
+  // }
+  const createSuperset = (
+    workoutId,
+    supersetFirstExerciseId,
+    supersetSecondExerciseId,
+  ) => {
+    const updatedWorkouts = [...workouts]
+    let workoutToUpdate = getWorkoutById(workoutId, updatedWorkouts)
+    if (!workoutToUpdate.supersets) {
+      workoutToUpdate.supersets = {}
+    }
+    workoutToUpdate.supersets[supersetFirstExerciseId] = supersetSecondExerciseId
+    workoutToUpdate.supersets[supersetSecondExerciseId] = supersetFirstExerciseId
+    workoutToUpdate = reorderExercisesToBeNextToEachOther(
+      workoutToUpdate,
+      supersetFirstExerciseId,
+      supersetSecondExerciseId,
+    )
+    saveWorkoutsState(updatedWorkouts)
+  }
+
+  // Reorder the exercises in a workout so that the two exercises are next to each other.
+  // Used when creating a superset
+  const reorderExercisesToBeNextToEachOther = (
+    workoutToUpdate,
+    firstExerciseId,
+    secondExerciseId,
+  ) => {
+    const firstExerciseIndex = workoutToUpdate.exercises.findIndex(
+      (exercise) => exercise.id === firstExerciseId,
+    )
+    const secondExerciseIndex = workoutToUpdate.exercises.findIndex(
+      (exercise) => exercise.id === secondExerciseId,
+    )
+    const [secondExercise] = workoutToUpdate.exercises.splice(secondExerciseIndex, 1)
+    let insertionIndex = firstExerciseIndex
+    if (secondExerciseIndex < firstExerciseIndex) {
+      insertionIndex--
+    }
+    workoutToUpdate.exercises.splice(insertionIndex + 1, 0, secondExercise)
+
+    return workoutToUpdate
+  }
+
+  const getExerciseSuperset = (exerciseId) => {
+    // find workout the exercise belongs to
+    const workout = workouts.find((workout) => {
+      return workout.exercises.find((exercise) => exercise.id === exerciseId)
+    })
+    if (!workout) {
+      return null
+    }
+    return workout.supersets[exerciseId]
+  }
+
+  const removeSupersetForExercise = (workoutId, exerciseId) => {
+    const updatedWorkouts = [...workouts]
+    const workoutToUpdate = getWorkoutById(workoutId, updatedWorkouts)
+    const linkedExercise = workoutToUpdate.supersets[exerciseId]
+
+    delete workoutToUpdate.supersets[exerciseId]
+    delete workoutToUpdate.supersets[linkedExercise]
+    saveWorkoutsState(updatedWorkouts)
+  }
+
+  const getSupersetsForWorkout = (workoutId) => {
+    const workout = getWorkoutById(workoutId, workouts)
+    if (!workout.supersets) {
+      workout.supersets = {}
+    }
+    return workout.supersets
+  }
+
   return {
     isLoading,
     workouts,
     getWorkoutById,
+    getWorkoutByExerciseId,
     getExerciseById,
     addCompletedSetToExercise,
     undoLastCompletedSetForExercise,
@@ -251,6 +366,10 @@ const useWorkouts = () => {
     createExercise,
     deleteWorkout,
     createWorkout,
+    createSuperset,
+    removeSupersetForExercise,
+    getExerciseSuperset,
+    getSupersetsForWorkout,
   }
 }
 

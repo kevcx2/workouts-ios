@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const useGesture = () => {
+const useGesture = (options ) => {
   const [gesture, setGesture] = useState(undefined)
 
   return {
@@ -17,8 +17,10 @@ const useGesture = () => {
       currentGesture.x = pageX
       currentGesture.y = pageY
       setGesture(currentGesture)
+      options?.onChange?.(currentGesture)
     },
     onGestureEnd() {
+      options?.onEnd?.(gesture)
       setGesture(undefined)
     },
     gesture,

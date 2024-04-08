@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 })
 
 const explainText =
-  'This is the smallest amount of weight you can add or remove to an exercise.'
+  'This is the smallest amount of weight you can add or remove to an exercise'
 
 const WeightIncrement = ({ backName }) => {
   const { incrementWeightBy, setIncrementWeightBy } = useSettingsContext()

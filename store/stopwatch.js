@@ -75,12 +75,9 @@ const useStopwatch = () => {
 
   // Update the stopwatch every decisecond
   useEffect(() => {
-    let interval
-
-    interval = setInterval(() => {
+    let interval = setInterval(() => {
       setElapsedTime(stopwatch.getElapsedRunningTime())
     }, 100)
-
     return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -92,6 +89,7 @@ const useStopwatch = () => {
     stop,
     toggle,
     reset,
+    isRunning: stopwatch.isRunning(),
     isShowing,
     show: () => {
       setIsShowing(true)

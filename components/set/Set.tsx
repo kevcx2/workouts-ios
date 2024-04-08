@@ -46,8 +46,10 @@ const styles = StyleSheet.create({
 })
 
 const Set = ({ exercise }) => {
-  const { addCompletedSetToExercise, undoLastCompletedSetForExercise } =
-    useWorkoutsContext()
+  const {
+    addCompletedSetToExercise,
+    undoLastCompletedSetForExercise,
+  } = useWorkoutsContext()
   const { reset, start } = useStopwatchContext()
   const { onGestureMove, onGestureEnd, gesture } = useGesture()
   const [numReps, setNumReps] = useState()

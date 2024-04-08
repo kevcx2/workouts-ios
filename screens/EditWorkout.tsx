@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, PlatformColor, Button, Alert } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
 
+import ActionsMenu from '@/components/ActionsMenu'
 import ScrollWithHeaderView from '@/components/ScrollWithHeaderView'
 import BackButton from '@/components/base/BackButton'
 import { useWorkoutsContext } from '@/store/workouts'
-import PressableView from '@/components/base/PressableView'
 import WorkoutEditor from '@/components/editors/WorkoutEditor'
 import tokens from '@/styles/tokens'
 
@@ -47,11 +46,12 @@ function EditWorkout({ navigation, route }) {
           }}
         />
       }
-      rightHeaderEl={<AddExerciseButton onAddExercise={onAddExercise} />}
+      rightHeaderEl={<AddElementToWorkoutButton onAddExercise={onAddExercise} />}
       header="Edit Workout"
       showSmallHeaderOnScroll
     >
       <WorkoutEditor
+        navigation={navigation}
         workoutId={workoutId}
         selectedExercise={selectedExercise}
         onSelectExercise={setSelectedExercise}
@@ -86,11 +86,21 @@ function EditWorkout({ navigation, route }) {
   )
 }
 
-export const AddExerciseButton = ({ onAddExercise }) => {
+export const AddElementToWorkoutButton = ({ onAddExercise }) => {
+  const actions = [
+    {
+      title: 'Add exercise',
+      action: onAddExercise,
+      icon: 'barbell-outline',
+    },
+    {
+      title: 'Add superset',
+      action: () => {},
+      icon: 'sync-outline',
+    },
+  ]
   return (
-    <PressableView pressedStyle={styles.actionPressed} onPress={onAddExercise}>
-      <Ionicons name="add-circle-outline" size={28} color={PlatformColor('link')} />
-    </PressableView>
+    <ActionsMenu menuItems={actions} icon={"add-circle-outline"} />
   )
 }
 

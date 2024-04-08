@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: tokens.space.base,
+    marginBottom: tokens.space.half,
   },
   smallHeaderContainer: {
     marginLeft: 10,
@@ -47,7 +47,7 @@ const HeaderContent = ({
   showSmallHeaderOnScroll,
 }) => {
   return (
-    <View style={[styles.header]}>
+    <View style={styles.header}>
       <SafeAreaView style={styles.headerContentArea}>
         <View style={styles.leftHeaderElContainer}>{leftHeaderEl}</View>
         {showSmallHeaderOnScroll ? (
